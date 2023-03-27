@@ -118,8 +118,15 @@ class Database:
             await session.commit()
         return await self.get_plugin_by_id(session, plugin.id)
 
-    async def insert_version(self, session: "AsyncSession", artifact_id: int, **kwargs) -> "Version":
-        version = Version(artifact_id=artifact_id, name=kwargs["name"], hash=kwargs["hash"], added_on=datetime.now())
+    async def insert_version(
+        self,
+        session: "AsyncSession",
+        artifact_id: int,
+        name: str,
+        hash: str,
+        created: "datetime | None" = None,
+    ) -> "Version":
+        version = Version(artifact_id=artifact_id, name=name, hash=hash, created=created or datetime.now())
         async with self.lock:
             session.add(version)
             await session.commit()
